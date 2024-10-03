@@ -2,6 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDebug>
+#include "udp_client.h"
+
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,8 +21,12 @@ public:
 
 private slots:
   void on_pushButton_clicked();
+  void on_pushButton_clicked(bool checked);
+
+  void show_photo();
 
 private:
   Ui::MainWindow *ui;
+  udp_client *udpSocket;
 };
 #endif // MAINWINDOW_H
