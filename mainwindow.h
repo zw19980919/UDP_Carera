@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QDebug>
 #include "udp_client.h"
-
+#include "winsocket.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -23,10 +23,12 @@ private slots:
   void on_pushButton_clicked();
   void on_pushButton_clicked(bool checked);
 
-  void show_photo();
+  void show_photo(QByteArray *data);
 
 private:
   Ui::MainWindow *ui;
   udp_client *udpSocket;
+  QThread    *udpThread;
+  winsocket  *winsockThread;
 };
 #endif // MAINWINDOW_H

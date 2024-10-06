@@ -5,16 +5,18 @@
 #include <QDebug>
 #include <QUdpSocket>
 #include <QHostAddress>
-//#include <QNetworkDatagram>
+#include "qthread.h"
+#include <WinSock2.h>
 
 
 class udp_client: public QObject
 {
   Q_OBJECT
   public:
+  #define photo_size 10
   udp_client(QObject *parent = nullptr);
-  QByteArray g_photo_data;//全局图像数据
-
+  QByteArray g_photo_data[photo_size];     //全局图像数据,接收可能比处理更频繁
+  int photo_offset = 0;                    //现在待发送的图像数据是第几个
   private:
           QUdpSocket *client;
 
@@ -22,7 +24,7 @@ class udp_client: public QObject
           void messageReceive();
 
   signals:
-    void show_photo();
+    void show_photo(QByteArray *data);
 };
 
 

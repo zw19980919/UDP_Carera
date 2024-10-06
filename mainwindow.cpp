@@ -7,8 +7,15 @@ MainWindow::MainWindow(QWidget *parent)
 {
   ui->setupUi(this);
   ui->pushButton->setCheckable(true);
-  udpSocket = new udp_client(this);
+
+  udpSocket = new udp_client();
+  udpThread = new QThread ;
+  udpSocket->moveToThread(udpThread);
+  udpThread->start();
   connect(udpSocket, &udp_client::show_photo, this, &MainWindow::show_photo);
+
+//  winsockThread = new winsocket();
+//  winsockThread->init("192.168.1.2", 6000);
 }
 
 MainWindow::~MainWindow()
@@ -35,16 +42,17 @@ void MainWindow::on_pushButton_clicked(bool checked)
 }
 
 
-void MainWindow::show_photo()
+void MainWindow::show_photo(QByteArray *data)
 {
     QImage image;
-    bool flag = image.loadFromData((const uchar *)udpSocket->g_photo_data.data(),udpSocket->g_photo_data.size());
-     qDebug()<<"show_photo size:"<<udpSocket->g_photo_data.size()<<endl;
+    qDebug() << "gui thread ID:" << QThread::currentThreadId();
+    bool flag = image.loadFromData((uchar *)(data->data() + 4), data->size() - 8);
+     qDebug()<<"show_photo size:"<<data->size()<<endl;
         if(flag)
         {
             QPixmap pixmap=QPixmap::fromImage(image);
             ui->label->setPixmap(pixmap);
-            udpSocket->g_photo_data.clear();
+            data->clear();
         }
 }
 
